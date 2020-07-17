@@ -28,7 +28,7 @@ def serve_key(request):
     api_data = {"Result":"API key available",
                 "api_key":key_id,
                 }
-    return JsonResponse(api_data, status=201)
+    return JsonResponse(api_data, status=200)
 
 @csrf_exempt
 def unblock_key(request):
@@ -49,7 +49,7 @@ def unblock_key(request):
         api_data = {"Result":"API key doesn't exist"}
         return JsonResponse(api_data, status=404)
     api_data = {"Result":"API key unblocked successfully"}
-    return JsonResponse(api_data, status=202)
+    return JsonResponse(api_data, status=200)
 
 @csrf_exempt
 def delete_key(request):
@@ -69,4 +69,19 @@ def delete_key(request):
         api_data = {"Result":"API key doesn't exist"}
         return JsonResponse(api_data, status=404)
     api_data = {"Result":"API key deleted successfully"}
-    return JsonResponse(api_data, status=202)
+    return JsonResponse(api_data, status=200)
+
+@csrf_exempt
+def keep_alive(request):
+    if(request.method == "POST"):
+        unique_key = request.POST.get("user_key")
+    key_id = unique_key.split('+')[1]
+    try:
+        random_key = RandomKey.objects.get(id=key_id)
+        random_key.last_alive_call = datetime.now()
+        random_key.save()
+    except:
+        api_data = {"Result":"API key doesn't exist"}
+        return JsonResponse(api_data, status=404)
+    api_data = {"Result":"API key will be alive for next 5 minutes"}
+    return JsonResponse(api_data, status=200)
