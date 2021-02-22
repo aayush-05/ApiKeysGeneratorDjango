@@ -1,4 +1,4 @@
-# Random_Keys_Generator_LF
+# API Keys Generator
 
 ## Technologies Used
 * Django
